@@ -1,6 +1,5 @@
 package com.example.a14firebase.ui.note
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
@@ -20,80 +19,78 @@ import java.util.*
 
 @AndroidEntryPoint
 class AddNoteActivity : AppCompatActivity() {
-    private lateinit var addNoteBinding: ActivityAddNoteBinding
-    private val TAG = "KRISHNA"
+    private lateinit var binding: ActivityAddNoteBinding
     var objNote: Note? = null
     var tagsList: MutableList<String> = arrayListOf()
 
     //ViewModel
-    private lateinit var noteViewModel: NoteViewModel
+    private lateinit var viewModel: NoteViewModel
 
     //Repository
-    private lateinit var noteRepository: NoteRepository
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addNoteBinding = ActivityAddNoteBinding.inflate(layoutInflater)
-        setContentView(addNoteBinding.root)
+        binding = ActivityAddNoteBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
+        viewModel = ViewModelProvider(this)[NoteViewModel::class.java]
         updateUI()
         observer()
 
     }
 
     private fun observer() {
-        noteViewModel.addNote.observe(this, Observer { state ->
+        viewModel.addNote.observe(this, Observer { state ->
             when (state) {
                 is UiState.Loading -> {
-                    addNoteBinding.progressBar.show()
+                    binding.progressBar.show()
                 }
                 is UiState.Failure -> {
-                    addNoteBinding.progressBar.hide()
+                    binding.progressBar.hide()
                     toast(state.error)
                 }
                 is UiState.Success -> {
-                    addNoteBinding.progressBar.hide()
+                    binding.progressBar.hide()
                     toast(state.data.second)
                     objNote = state.data.first
                     isMakeEnableUI(false)
-                    addNoteBinding.done.hide()
-                    addNoteBinding.delete.show()
-                    addNoteBinding.edit.show()
+                    binding.done.hide()
+                    binding.delete.show()
+                    binding.edit.show()
                 }
             }
         })
-        noteViewModel.updateNote.observe(this, Observer { state ->
+        viewModel.updateNote.observe(this, Observer { state ->
             when (state) {
                 is UiState.Loading -> {
-                    addNoteBinding.progressBar.show()
+                    binding.progressBar.show()
                 }
                 is UiState.Failure -> {
-                    addNoteBinding.progressBar.hide()
+                    binding.progressBar.hide()
                     toast(state.error)
                 }
                 is UiState.Success -> {
-                    addNoteBinding.progressBar.hide()
+                    binding.progressBar.hide()
                     toast(state.data)
-                    addNoteBinding.done.hide()
-                    addNoteBinding.edit.show()
+                    binding.done.hide()
+                    binding.edit.show()
                     isMakeEnableUI(false)
                 }
             }
         })
 
-        noteViewModel.deleteNote.observe(this, Observer { state ->
+        viewModel.deleteNote.observe(this, Observer { state ->
             when (state) {
                 is UiState.Loading -> {
-                    addNoteBinding.progressBar.show()
+                    binding.progressBar.show()
                 }
                 is UiState.Failure -> {
-                    addNoteBinding.progressBar.hide()
+                    binding.progressBar.hide()
                     toast(state.error)
                 }
                 is UiState.Success -> {
-                    addNoteBinding.progressBar.hide()
+                    binding.progressBar.hide()
                     toast(state.data)
-                    startActivity(Intent(this, NoteActivity::class.java))
+//                    startActivity(Intent(this, NoteActivity::class.java))
                 }
             }
         })
@@ -103,62 +100,62 @@ class AddNoteActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("dd MMM yyyy . hh:mm a")
         objNote = intent.getParcelableExtra("note")
         objNote?.let { note ->
-            addNoteBinding.title.setText(note.title)
-            addNoteBinding.date.text = sdf.format(note.date)
+            binding.title.setText(note.title)
+            binding.date.text = sdf.format(note.date)
             tagsList = note.tags
             addTags(tagsList)
-            addNoteBinding.description.setText(note.description)
-            addNoteBinding.done.hide()
-            addNoteBinding.edit.show()
-            addNoteBinding.delete.show()
+            binding.description.setText(note.description)
+            binding.done.hide()
+            binding.edit.show()
+            binding.delete.show()
             isMakeEnableUI(false)
         } ?: run {
-            addNoteBinding.title.setText("")
-            addNoteBinding.date.text = sdf.format(Date())
-            addNoteBinding.description.setText("")
-            addNoteBinding.done.hide()
-            addNoteBinding.edit.hide()
-            addNoteBinding.delete.hide()
+            binding.title.setText("")
+            binding.date.text = sdf.format(Date())
+            binding.description.setText("")
+            binding.done.hide()
+            binding.edit.hide()
+            binding.delete.hide()
             isMakeEnableUI(true)
         }
-        addNoteBinding.back.setOnClickListener {
-            val intent = Intent(this, NoteActivity::class.java)
-            startActivity(intent)
+        binding.back.setOnClickListener {
+//            val intent = Intent(this, NoteActivity::class.java)
+//            startActivity(intent)
         }
-        addNoteBinding.title.setOnClickListener {
+        binding.title.setOnClickListener {
             isMakeEnableUI(true)
         }
-        addNoteBinding.description.setOnClickListener {
+        binding.description.setOnClickListener {
             isMakeEnableUI(true)
         }
-        addNoteBinding.delete.setOnClickListener {
-            objNote?.let { noteViewModel.deleteNote(it) }
+        binding.delete.setOnClickListener {
+            objNote?.let { viewModel.deleteNote(it) }
         }
-        addNoteBinding.addTagLl.setOnClickListener {
+        binding.addTagLl.setOnClickListener {
             showAddTagDialog()
         }
-        addNoteBinding.edit.setOnClickListener {
+        binding.edit.setOnClickListener {
             isMakeEnableUI(true)
-            addNoteBinding.done.show()
-            addNoteBinding.edit.hide()
-            addNoteBinding.title.requestFocus()
+            binding.done.show()
+            binding.edit.hide()
+            binding.title.requestFocus()
         }
-        addNoteBinding.done.setOnClickListener {
+        binding.done.setOnClickListener {
             if (validation()) {
                 if (objNote == null) {
-                    noteViewModel.addNote(getNote())
+                    viewModel.addNote(getNote())
                 } else {
-                    noteViewModel.updateNote(getNote())
+                    viewModel.updateNote(getNote())
                 }
             }
         }
-        addNoteBinding.title.doAfterTextChanged {
-            addNoteBinding.done.show()
-            addNoteBinding.edit.hide()
+        binding.title.doAfterTextChanged {
+            binding.done.show()
+            binding.edit.hide()
         }
-        addNoteBinding.description.doAfterTextChanged {
-            addNoteBinding.done.show()
-            addNoteBinding.edit.hide()
+        binding.description.doAfterTextChanged {
+            binding.done.show()
+            binding.edit.hide()
         }
 
     }
@@ -173,18 +170,18 @@ class AddNoteActivity : AppCompatActivity() {
             } else {
                 val text = editText.text.toString()
                 tagsList.add(text)
-                addNoteBinding.tags.apply {
+                binding.tags.apply {
                     addChip(text, true) {
                         tagsList.forEachIndexed { index, tag ->
                             if (text == tag) {
                                 tagsList.removeAt(index)
-                                addNoteBinding.tags.removeViewAt(index)
+                                binding.tags.removeViewAt(index)
                             }
                         }
 
                     }
-                    addNoteBinding.done.show()
-                    addNoteBinding.edit.hide()
+                    binding.done.show()
+                    binding.edit.hide()
                     dialog.dismiss()
                 }
             }
@@ -195,7 +192,7 @@ class AddNoteActivity : AppCompatActivity() {
 
     private fun addTags(note: MutableList<String>) {
         if (note.size > 0) {
-            addNoteBinding.tags.apply {
+            binding.tags.apply {
                 removeAllViews()
                 note.forEachIndexed { index, tag ->
                     addChip(tag, true) {
@@ -210,19 +207,19 @@ class AddNoteActivity : AppCompatActivity() {
     }
 
     private fun isMakeEnableUI(isDisable: Boolean = false) {
-        addNoteBinding.title.isEnabled = isDisable
-        addNoteBinding.date.isEnabled = isDisable
-        addNoteBinding.tags.isEnabled = isDisable
-        addNoteBinding.description.isEnabled = isDisable
+        binding.title.isEnabled = isDisable
+        binding.date.isEnabled = isDisable
+        binding.tags.isEnabled = isDisable
+        binding.description.isEnabled = isDisable
     }
 
     private fun validation(): Boolean {
         var isValid = true
-        if (addNoteBinding.title.text.toString().isNullOrEmpty()) {
+        if (binding.title.text.toString().isNullOrEmpty()) {
             isValid = false
             toast(getString(R.string.error_title))
         }
-        if (addNoteBinding.description.text.toString().isNullOrEmpty()) {
+        if (binding.description.text.toString().isNullOrEmpty()) {
             isValid = false
             toast(getString(R.string.error_description))
         }
@@ -232,8 +229,8 @@ class AddNoteActivity : AppCompatActivity() {
     private fun getNote(): Note {
         return Note(
             id = objNote?.id ?: "",
-            title = addNoteBinding.title.text.toString(),
-            description = addNoteBinding.description.text.toString(),
+            title = binding.title.text.toString(),
+            description = binding.description.text.toString(),
             tags = tagsList,
             date = Date()
         )

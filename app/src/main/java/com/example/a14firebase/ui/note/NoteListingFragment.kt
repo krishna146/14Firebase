@@ -44,7 +44,9 @@ class NoteListingFragment : Fragment() {
         binding.recyclerView.itemAnimator = null
         val noteListingAdapter = NoteListingAdapter(
             onItemClicked = { position, note ->
-                findNavController().navigate(R.id.action_noteListingFragment_to_noteDetailFragment)
+                findNavController().navigate(R.id.action_noteListingFragment_to_noteDetailFragment, Bundle().apply {
+                            putParcelable("note", note)
+                        })
             }
         )
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
