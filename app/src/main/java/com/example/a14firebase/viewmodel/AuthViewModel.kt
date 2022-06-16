@@ -1,4 +1,4 @@
-package com.example.a14firebase.ui.auth
+package com.example.a14firebase.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

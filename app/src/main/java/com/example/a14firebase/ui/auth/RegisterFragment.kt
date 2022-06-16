@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.a14firebase.R
-import com.example.a14firebase.databinding.FragmentLoginBinding
 import com.example.a14firebase.databinding.FragmentRegisterBinding
 import com.example.a14firebase.models.User
 import com.example.a14firebase.utils.*
+import com.example.a14firebase.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
