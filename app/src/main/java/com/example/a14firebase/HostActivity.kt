@@ -1,4 +1,4 @@
-package com.example.a14firebase.ui
+package com.example.a14firebase
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package com.example.a14firebase.application
+package com.example.a14firebase
 
 import android.app.Application
 import android.net.ConnectivityManager
