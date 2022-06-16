@@ -23,9 +23,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.note.AddNoteActivity"
-            android:exported="false" />
 
     </application>
 

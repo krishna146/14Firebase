@@ -1,6 +1,5 @@
 package com.example.a14firebase.repository
 
-import android.provider.SyncStateContract
 import com.example.a14firebase.models.User
 import com.example.a14firebase.utils.FireStoreCollection
 import com.example.a14firebase.utils.UiState
@@ -23,14 +22,17 @@ class AuthRepositoryImpl(
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    updateUserInfo(user){state ->
-                        when(state){
-                            is UiState.Success ->{
+                    updateUserInfo(user) { state ->
+                        when (state) {
+                            is UiState.Success -> {
                                 result(UiState.Success("user registered successfully"))
 
                             }
-                            is UiState.Failure ->{
+                            is UiState.Failure -> {
                                 result(UiState.Failure(state.error))
+                            }
+                            is UiState.Loading ->{
+
                             }
                         }
 
@@ -56,8 +58,18 @@ class AuthRepositoryImpl(
             }
     }
 
-    override fun loginUser(user: User, result: (UiState<String>) -> Unit) {
-        TODO("Not yet implemented")
+    override fun loginUser(email: String, password: String, result: (UiState<String>) -> Unit) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    result(UiState.Success("Login successfully"))
+
+                }
+            }
+            .addOnFailureListener {
+                result(UiState.Failure("Authentication failed , check email and password"))
+
+            }
     }
 
     override fun forgotPassword(user: User, result: (UiState<String>) -> Unit) {
