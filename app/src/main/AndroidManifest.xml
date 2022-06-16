@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.a14firebase">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name=".application.NoteApplication"
         android:allowBackup="true"
@@ -11,10 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.14Firebase">
         <activity
-            android:name=".ui.NoteActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.HostActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,12 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".ui.AddNoteActivity"
+            android:name=".ui.note.AddNoteActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.SignupActivity"
-            android:exported="false" />
+
     </application>
 
 </manifest>

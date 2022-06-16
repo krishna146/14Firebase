@@ -8,8 +8,11 @@ import com.example.a14firebase.models.Note
 import com.example.a14firebase.models.SignupData
 import com.example.a14firebase.repository.NoteRepository
 import com.example.a14firebase.utils.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class NoteViewModel(private val noteRepository: NoteRepository) : ViewModel() {
+@HiltViewModel
+class NoteViewModel @Inject constructor(private val noteRepository: NoteRepository) : ViewModel() {
 
     val userData: LiveData<SignupData>
         get() = noteRepository.userData
@@ -20,8 +23,8 @@ class NoteViewModel(private val noteRepository: NoteRepository) : ViewModel() {
         get() = _notes
 
 
-    private val _addNote = MutableLiveData<UiState<String>>()
-    val addNote: LiveData<UiState<String>>
+    private val _addNote = MutableLiveData<UiState<Pair<Note,String>>>()
+    val addNote: LiveData<UiState<Pair<Note,String>>>
         get() = _addNote
 
     private val _updateNote = MutableLiveData<UiState<String>>()
@@ -35,9 +38,9 @@ class NoteViewModel(private val noteRepository: NoteRepository) : ViewModel() {
 
 
     //getting user data from our realtime db
-    fun getUserData(userId: String) {
-        noteRepository.getUserData(userId)
-    }
+//    fun getUserData(userId: String) {
+//        noteRepository.getUserData(userId)
+//    }
 
     fun getNotes() {
         _notes.postValue(UiState.Loading)

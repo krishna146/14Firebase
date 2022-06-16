@@ -1,25 +1,16 @@
 package com.example.a14firebase.application
 
 import android.app.Application
+import android.net.ConnectivityManager
 import com.example.a14firebase.repository.NoteRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
-class NoteApplication: Application() {
-    lateinit var noteRepository : NoteRepository
-    private lateinit var realtimeDb: FirebaseDatabase
-    private lateinit var firestoreDb: FirebaseFirestore
-    override fun onCreate() {
-        super.onCreate()
-        initialize();
-    }
-
-    private fun initialize() {
-        firestoreDb = Firebase.firestore
-        realtimeDb = FirebaseDatabase.getInstance()
-        noteRepository = NoteRepository(realtimeDb, firestoreDb)
-    }
-
-}
+@HiltAndroidApp
+class NoteApplication: Application()

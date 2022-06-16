@@ -5,13 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a14firebase.databinding.NoteSingleRowBinding
 import com.example.a14firebase.models.Note
+import com.example.a14firebase.utils.addChip
+import com.example.a14firebase.utils.hide
+import java.text.SimpleDateFormat
 
 
 class NoteListingAdapter(
     val onItemClicked: (Int, Note) -> Unit,
-    val onEditClicked: (Int, Note) -> Unit,
-    val onDeleteClicked: (Int,Note) -> Unit
 ) : RecyclerView.Adapter<NoteListingAdapter.MyViewHolder>() {
+    val sdf = SimpleDateFormat("dd MM yyyy")
 
     private var list: MutableList<Note> = arrayListOf()
 
@@ -46,13 +48,31 @@ class NoteListingAdapter(
 
 
 //there is no significance of ViewHolder without adapter, hence nested class
-    inner class MyViewHolder(private val binding: NoteSingleRowBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Note){
-            binding.noteIdValue.text = item.id
-            binding.msg.text = item.text
-            binding.edit.setOnClickListener { onEditClicked(bindingAdapterPosition,item) }
-            binding.delete.setOnClickListener { onDeleteClicked(bindingAdapterPosition,item) }
-            binding.itemLayout.setOnClickListener { onItemClicked(bindingAdapterPosition,item) }
+    inner class MyViewHolder(private val noteSingleRowBinding: NoteSingleRowBinding) : RecyclerView.ViewHolder(noteSingleRowBinding.root) {
+    fun bind(item: Note){
+        noteSingleRowBinding.title.text = item.title
+        noteSingleRowBinding.date.text = sdf.format(item.date)
+        noteSingleRowBinding.tags.apply {
+            if (item.tags.isNullOrEmpty()){
+                hide()
+            }else {
+                removeAllViews()
+                if (item.tags.size > 2) {
+                    item.tags.subList(0, 2).forEach { tag -> addChip(tag) }
+                    addChip("+${item.tags.size - 2}")
+                } else {
+                    item.tags.forEach { tag -> addChip(tag) }
+                }
+            }
         }
+        noteSingleRowBinding.desc.apply {
+            if (item.description.length > 120){
+                text = "${item.description.substring(0,120)}..."
+            }else{
+                text = item.description
+            }
+        }
+        noteSingleRowBinding.itemLayout.setOnClickListener { onItemClicked(adapterPosition,item) }
+    }
     }
 }

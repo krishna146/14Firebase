@@ -6,7 +6,7 @@ import com.example.a14firebase.repository.NoteRepository
 
 class SignupViewModel(private val noteRepository: NoteRepository): ViewModel() {
 
-    fun saveSignUpData(signupData: SignupData, userId: String){
-        noteRepository.saveSignUpData(signupData, userId)
-    }
+//    fun saveSignUpData(signupData: SignupData, userId: String){
+//        noteRepository.saveSignUpData(signupData, userId)
+//    }
 }
