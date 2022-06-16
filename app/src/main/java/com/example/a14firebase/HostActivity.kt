@@ -12,6 +12,7 @@ class HostActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHostBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
     }
 }
