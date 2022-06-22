@@ -7,13 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.a14firebase.R
-import com.example.a14firebase.databinding.FragmentLoginBinding
 import com.example.a14firebase.databinding.FragmentNoteDetailBinding
 import com.example.a14firebase.models.Note
 import com.example.a14firebase.utils.*
+import com.example.a14firebase.viewmodel.AuthViewModel
 import com.example.a14firebase.viewmodel.NoteViewModel
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +28,8 @@ class NoteDetailFragment : Fragment() {
         get() = _binding!!
     var objNote: Note? = null
     var tagsList: MutableList<String> = arrayListOf()
-    private lateinit var viewModel: NoteViewModel
+    private val noteViewModel by viewModels<NoteViewModel>()
+    private val authViewModel by viewModels<AuthViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,14 +40,13 @@ class NoteDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
         updateUI()
         observer()
 
     }
 
     private fun observer() {
-        viewModel.addNote.observe(viewLifecycleOwner) { state ->
+        noteViewModel.addNote.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
                     binding.progressBar.show()
@@ -65,7 +66,7 @@ class NoteDetailFragment : Fragment() {
                 }
             }
         }
-        viewModel.updateNote.observe(viewLifecycleOwner) { state ->
+        noteViewModel.updateNote.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
                     binding.progressBar.show()
@@ -84,7 +85,7 @@ class NoteDetailFragment : Fragment() {
             }
         }
 
-        viewModel.deleteNote.observe(viewLifecycleOwner) { state ->
+        noteViewModel.deleteNote.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
                     binding.progressBar.show()
@@ -134,7 +135,7 @@ class NoteDetailFragment : Fragment() {
             isMakeEnableUI(true)
         }
         binding.delete.setOnClickListener {
-            objNote?.let { viewModel.deleteNote(it) }
+            objNote?.let { noteViewModel.deleteNote(it) }
         }
         binding.addTagLl.setOnClickListener {
             showAddTagDialog()
@@ -148,9 +149,9 @@ class NoteDetailFragment : Fragment() {
         binding.done.setOnClickListener {
             if (validation()) {
                 if (objNote == null) {
-                    viewModel.addNote(getNote())
+                    noteViewModel.addNote(getNote())
                 } else {
-                    viewModel.updateNote(getNote())
+                    noteViewModel.updateNote(getNote())
                 }
             }
         }
@@ -238,7 +239,7 @@ class NoteDetailFragment : Fragment() {
             description = binding.description.text.toString(),
             tags = tagsList,
             date = Date()
-        )
+        ).apply { authViewModel.getSession { this.user_id = it?.id ?: "" } }
     }
 
     override fun onDestroyView() {

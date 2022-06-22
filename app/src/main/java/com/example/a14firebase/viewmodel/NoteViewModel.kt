@@ -1,11 +1,10 @@
 package com.example.a14firebase.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.a14firebase.models.Note
-import com.example.a14firebase.models.SignupData
+import com.example.a14firebase.models.User
 import com.example.a14firebase.repository.NoteRepository
 import com.example.a14firebase.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,10 +12,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoteViewModel @Inject constructor(private val noteRepository: NoteRepository) : ViewModel() {
-
-    val userData: LiveData<SignupData>
-        get() = noteRepository.userData
-
 
     private val _notes = MutableLiveData<UiState<List<Note>>>()
     val notes: LiveData<UiState<List<Note>>>
@@ -35,25 +30,20 @@ class NoteViewModel @Inject constructor(private val noteRepository: NoteReposito
     val deleteNote: LiveData<UiState<String>>
         get() = _deleteNote
 
-
-
-    //getting user data from our realtime db
-//    fun getUserData(userId: String) {
-//        noteRepository.getUserData(userId)
-//    }
-
-    fun getNotes() {
+    fun getNotes(user: User?) {
         _notes.postValue(UiState.Loading)
-        noteRepository.getNotes {
+        noteRepository.getNotes(user) {
             _notes.postValue(it)
         }
     }
+
     fun addNote(note: Note){
         _addNote.postValue(UiState.Loading)
         noteRepository.insertNote(note) {
             _addNote.postValue(it)
         }
     }
+
     fun updateNote(note: Note){
         _updateNote.postValue(UiState.Loading)
         noteRepository.updateNote(note) {

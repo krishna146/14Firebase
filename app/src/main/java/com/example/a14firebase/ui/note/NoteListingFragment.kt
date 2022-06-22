@@ -55,7 +55,6 @@ class NoteListingFragment : Fragment() {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
         binding.recyclerView.layoutManager = staggeredGridLayoutManager
         binding.recyclerView.adapter = noteListingAdapter
-        //observing Notes Data
         observer()
         binding.btnCreate.setOnClickListener {
             findNavController().navigate(R.id.action_noteListingFragment_to_noteDetailFragment)
@@ -65,11 +64,14 @@ class NoteListingFragment : Fragment() {
                 findNavController().navigate(R.id.action_noteListingFragment_to_loginFragment)
             }
         }
+        authViewModel.getSession {
+            noteViewModel.getNotes(it)
+        }
 
     }
 
     private fun observer() {
-        noteViewModel.notes.observe(requireActivity(), Observer { state ->
+        noteViewModel.notes.observe(viewLifecycleOwner) { state ->
             //Observing UiState
             when (state) {
                 is UiState.Loading -> {
@@ -85,13 +87,8 @@ class NoteListingFragment : Fragment() {
                     noteListingAdapter.updateList(state.data.toMutableList())
                 }
             }
-        })
+        }
 
-    }
-
-    override fun onStart() {
-        super.onStart()
-        noteViewModel.getNotes()
     }
 
 
