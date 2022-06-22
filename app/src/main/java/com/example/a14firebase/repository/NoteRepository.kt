@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.a14firebase.models.Note
 import com.example.a14firebase.models.SignupData
+import com.example.a14firebase.utils.FireStoreCollection.NOTE
 import com.example.a14firebase.utils.UiState
+import com.google.android.gms.common.internal.Constants
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 
-const val TAG = "KRISHNA"
 class NoteRepository @Inject constructor(
     private val database: FirebaseFirestore
 ) : NoteRepositoryPrototype {
@@ -62,7 +63,7 @@ class NoteRepository @Inject constructor(
 //            }
 
 
-        val document = database.collection("notes").document()
+        val document = database.collection(NOTE).document()
         note.id = document.id
         document
             .set(note)
@@ -78,7 +79,7 @@ class NoteRepository @Inject constructor(
 
     //fetching data
     override fun getNotes(result: (UiState<List<Note>>) -> Unit) {
-        database.collection("notes")
+        database.collection(NOTE)
             .get()
             .addOnSuccessListener {
                 val notes = arrayListOf<Note>()
@@ -99,7 +100,7 @@ class NoteRepository @Inject constructor(
     }
 
     override fun updateNote(note: Note, result: (UiState<String>) -> Unit) {
-        val document = database.collection("notes").document(note.id)
+        val document = database.collection(NOTE).document(note.id)
         note.id = document.id
         document
             .set(note)
@@ -115,7 +116,7 @@ class NoteRepository @Inject constructor(
 
     override fun deleteNote(note: Note, result: (UiState<String>) -> Unit) {
         //getting document using its id
-        val document = database.collection("notes").document(note.id)
+        val document = database.collection(NOTE).document(note.id)
         note.id = document.id
         document
             .delete()

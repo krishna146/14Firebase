@@ -17,6 +17,9 @@ class AuthViewModel @Inject constructor(val repository: AuthRepository) : ViewMo
     private val _login = MutableLiveData<UiState<String>>()
     val login: LiveData<UiState<String>>
         get() = _login
+    private val _forgotPassword = MutableLiveData<UiState<String>>()
+    val forgotPassword: LiveData<UiState<String>>
+        get() = _forgotPassword
 
     fun register(
         email: String,
@@ -35,6 +38,21 @@ class AuthViewModel @Inject constructor(val repository: AuthRepository) : ViewMo
         _login.value = UiState.Loading
         repository.loginUser(email, password) {
             _login.value = it
+        }
+    }
+
+    fun forgotPassword(email: String) {
+        _forgotPassword.value = UiState.Loading
+        repository.forgotPassword(email) {
+            _forgotPassword.value = it
+        }
+    }
+    fun logout(result: () -> Unit){
+        repository.logout(result)
+    }
+    fun getSession(result: (User?) -> Unit){
+        repository.getSession {
+            result(it)
         }
     }
 }

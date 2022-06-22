@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.a14firebase.R
 import com.example.a14firebase.databinding.FragmentLoginBinding
 import com.example.a14firebase.utils.*
 import com.example.a14firebase.viewmodel.AuthViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,7 +21,7 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding: FragmentLoginBinding
         get() = _binding!!
-    private lateinit var viewModel: AuthViewModel
+    val viewModel by viewModels<AuthViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +33,6 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
         observer()
         binding.loginBtn.setOnClickListener {
             if (validation()) {
@@ -55,16 +56,16 @@ class LoginFragment : Fragment() {
         viewModel.login.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
-                    binding.loginBtn.setText("")
+                    binding.loginBtn.text = ""
                     binding.loginProgress.show()
                 }
                 is UiState.Failure -> {
-                    binding.loginBtn.setText("Login")
+                    binding.loginBtn.text = "Login"
                     binding.loginProgress.hide()
                     toast(state.error)
                 }
                 is UiState.Success -> {
-                    binding.loginBtn.setText("Login")
+                    binding.loginBtn.text = "Login"
                     binding.loginProgress.hide()
                     toast(state.data)
                     findNavController().navigate(R.id.action_loginFragment_to_noteListingFragment)
@@ -95,6 +96,15 @@ class LoginFragment : Fragment() {
             }
         }
         return isValid
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.getSession {
+            if (it != null) {
+                findNavController().navigate(R.id.action_loginFragment_to_noteListingFragment)
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -45,7 +45,6 @@ class NoteViewModel @Inject constructor(private val noteRepository: NoteReposito
     fun getNotes() {
         _notes.postValue(UiState.Loading)
         noteRepository.getNotes {
-            Log.d("krishna", it.toString())
             _notes.postValue(it)
         }
     }

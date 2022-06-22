@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.a14firebase.R
@@ -19,7 +20,7 @@ class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding: FragmentRegisterBinding
         get() = _binding!!
-    private lateinit var viewModel: AuthViewModel
+    val viewModel by viewModels<AuthViewModel>()
 
 
     override fun onCreateView(
@@ -32,7 +33,6 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
         observer()
         binding.registerBtn.setOnClickListener {
             if (validation()) {
