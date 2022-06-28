@@ -34,11 +34,15 @@
         <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/15Firebase/app/src/main/res/layout/fragment_register.xml" value="0.25" />
         <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/15Firebase/app/src/main/res/layout/item_chip.xml" value="0.25" />
         <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/15Firebase/app/src/main/res/layout/note_single_row.xml" value="0.25" />
+        <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/NoteFirestore/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.167" />
         <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/NoteFirestore/app/src/main/res/drawable/ic_baseline_exit_to_app_24.xml" value="0.18" />
         <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/NoteFirestore/app/src/main/res/layout/fragment_forget_password.xml" value="0.25" />
         <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/NoteFirestore/app/src/main/res/layout/fragment_login.xml" value="0.25" />
+        <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/NoteFirestore/app/src/main/res/layout/fragment_note_detail.xml" value="0.25" />
         <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/NoteFirestore/app/src/main/res/layout/fragment_note_listing.xml" value="0.25" />
         <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/NoteFirestore/app/src/main/res/layout/fragment_register.xml" value="0.25" />
+        <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/NoteFirestore/app/src/main/res/layout/image_item.xml" value="0.25" />
+        <entry key="..\:/Users/lenovo/Desktop/AndroidLearning/NoteFirestore/app/src/main/res/layout/image_layout.xml" value="0.13055555555555556" />
       </map>
     </option>
   </component>

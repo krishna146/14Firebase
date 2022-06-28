@@ -1,21 +1,28 @@
 package com.example.a14firebase.ui.note
 
+import android.app.Activity
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a14firebase.R
+import com.example.a14firebase.adapter.ImageListingAdapter
 import com.example.a14firebase.databinding.FragmentNoteDetailBinding
 import com.example.a14firebase.models.Note
 import com.example.a14firebase.utils.*
 import com.example.a14firebase.viewmodel.AuthViewModel
 import com.example.a14firebase.viewmodel.NoteViewModel
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -30,6 +37,11 @@ class NoteDetailFragment : Fragment() {
     var tagsList: MutableList<String> = arrayListOf()
     private val noteViewModel by viewModels<NoteViewModel>()
     private val authViewModel by viewModels<AuthViewModel>()
+    private val imgUriList: MutableList<Uri> = arrayListOf()
+    private val imgAdapter by lazy {
+        ImageListingAdapter(imgUriList)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,6 +52,9 @@ class NoteDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.imgRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.imgRecyclerView.adapter = imgAdapter
         updateUI()
         observer()
 
@@ -97,7 +112,6 @@ class NoteDetailFragment : Fragment() {
                 is UiState.Success -> {
                     binding.progressBar.hide()
                     toast(state.data)
-//                    startActivity(Intent(this, NoteActivity::class.java))
                 }
             }
         }
@@ -124,6 +138,16 @@ class NoteDetailFragment : Fragment() {
             binding.edit.hide()
             binding.delete.hide()
             isMakeEnableUI(true)
+        }
+
+        binding.imgAdd.setOnClickListener {
+            binding.progressBar.show()
+            ImagePicker.with(this)
+                .compress(1024)
+                .galleryOnly()
+                .createIntent { intent ->
+                    startForProfileImageResult.launch(intent)
+                }
         }
         binding.back.setOnClickListener {
             findNavController().navigateUp()
@@ -165,6 +189,27 @@ class NoteDetailFragment : Fragment() {
         }
 
     }
+
+    //call back Function when user picks the image
+    private val startForProfileImageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+            if (resultCode == Activity.RESULT_OK) {
+                //Image Uri will not be null for RESULT_OK
+                val fileUri = data?.data!!
+                Log.d(TAG, fileUri.toString())
+                imgUriList.add(fileUri)
+                imgAdapter.updateList()
+                binding.progressBar.hide()
+            } else if (resultCode == ImagePicker.RESULT_ERROR) {
+                binding.progressBar.hide()
+                toast(ImagePicker.getError(data))
+            } else {
+                binding.progressBar.hide()
+                Log.e(TAG, "Task Cancelled")
+            }
+        }
 
     private fun showAddTagDialog() {
         val dialog = createDialog(R.layout.add_tag_dialog, true, requireContext())
