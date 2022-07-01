@@ -1,13 +1,16 @@
 package com.example.a14firebase.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.a14firebase.models.Note
 import com.example.a14firebase.models.User
 import com.example.a14firebase.repository.NoteRepository
 import com.example.a14firebase.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,8 +21,8 @@ class NoteViewModel @Inject constructor(private val noteRepository: NoteReposito
         get() = _notes
 
 
-    private val _addNote = MutableLiveData<UiState<Pair<Note,String>>>()
-    val addNote: LiveData<UiState<Pair<Note,String>>>
+    private val _addNote = MutableLiveData<UiState<Pair<Note, String>>>()
+    val addNote: LiveData<UiState<Pair<Note, String>>>
         get() = _addNote
 
     private val _updateNote = MutableLiveData<UiState<String>>()
@@ -37,14 +40,14 @@ class NoteViewModel @Inject constructor(private val noteRepository: NoteReposito
         }
     }
 
-    fun addNote(note: Note){
+    fun addNote(note: Note) {
         _addNote.postValue(UiState.Loading)
         noteRepository.insertNote(note) {
             _addNote.postValue(it)
         }
     }
 
-    fun updateNote(note: Note){
+    fun updateNote(note: Note) {
         _updateNote.postValue(UiState.Loading)
         noteRepository.updateNote(note) {
             _updateNote.postValue(it)
@@ -53,8 +56,26 @@ class NoteViewModel @Inject constructor(private val noteRepository: NoteReposito
 
     fun deleteNote(note: Note) {
         _deleteNote.postValue(UiState.Loading)
-        noteRepository.deleteNote(note){
+        noteRepository.deleteNote(note) {
             _deleteNote.postValue(it)
+        }
+    }
+
+    fun uploadSingleImage(imgUri: Uri, onResult: (UiState<Uri>) -> Unit) {
+        onResult(UiState.Loading)
+        viewModelScope.launch {
+            noteRepository.uploadSingleImage(imgUri) { state ->
+                onResult(state)
+            }
+        }
+    }
+
+    fun uploadMultipleImage(imgUriList: List<Uri>, onResult: (UiState<List<Uri>>) -> Unit) {
+        onResult(UiState.Loading)
+        viewModelScope.launch {
+            noteRepository.uploadMultipleImage(imgUriList) { state ->
+                onResult(state)
+            }
         }
     }
 }

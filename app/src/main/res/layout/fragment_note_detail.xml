@@ -9,7 +9,7 @@
     tools:context=".ui.note.NoteDetailFragment">
 
     <ImageView
-        android:id="@+id/back"
+        android:id="@+id/backIcon"
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:src="@drawable/ic_back"
@@ -25,40 +25,40 @@
         android:layout_marginStart="16dp"
         android:text="All Notes"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/back"
-        app:layout_constraintStart_toEndOf="@+id/back"
-        app:layout_constraintTop_toTopOf="@+id/back" />
+        app:layout_constraintBottom_toBottomOf="@+id/backIcon"
+        app:layout_constraintStart_toEndOf="@+id/backIcon"
+        app:layout_constraintTop_toTopOf="@+id/backIcon" />
 
     <ImageView
-        android:id="@+id/delete"
+        android:id="@+id/deleteIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:paddingHorizontal="5dp"
         android:src="@drawable/ic_delete"
         android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/edit"
+        app:layout_constraintEnd_toStartOf="@+id/editIcon"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/black" />
 
     <ImageView
-        android:id="@+id/edit"
+        android:id="@+id/editIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:paddingHorizontal="5dp"
         android:src="@drawable/ic_edit"
         android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/done"
+        app:layout_constraintEnd_toStartOf="@+id/doneIcon"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/black" />
 
     <ImageView
-        android:id="@+id/done"
+        android:id="@+id/doneIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="5dp"
-        android:src="@drawable/ic_baseline_check_24"
+        android:src="@drawable/ic_add"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -146,7 +146,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/title" />
 
                 <ImageView
-                    android:id="@+id/imgAdd"
+                    android:id="@+id/addImgIcon"
                     android:layout_width="26dp"
                     android:layout_height="26dp"
                     android:layout_marginStart="8dp"

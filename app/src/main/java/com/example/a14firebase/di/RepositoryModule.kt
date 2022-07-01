@@ -7,6 +7,7 @@ import com.example.a14firebase.repository.NoteRepository
 import com.example.a14firebase.repository.NoteRepositoryPrototype
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -19,8 +20,8 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Provides
     @Singleton
-    fun provideNoteRepository(database: FirebaseFirestore): NoteRepositoryPrototype {
-        return NoteRepository(database)
+    fun provideNoteRepository(database: FirebaseFirestore, storageReference: StorageReference): NoteRepositoryPrototype {
+        return NoteRepository(database, storageReference)
     }
 
     @Provides

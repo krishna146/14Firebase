@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 
 
 class NoteListingAdapter(
-    val onItemClicked: (Int, Note) -> Unit,
+    val onItemClicked: (Note) -> Unit,
 ) : RecyclerView.Adapter<NoteListingAdapter.MyViewHolder>() {
     val sdf = SimpleDateFormat("dd MM yyyy")
 
@@ -66,13 +66,13 @@ class NoteListingAdapter(
             }
         }
         noteSingleRowBinding.desc.apply {
-            if (item.description.length > 120){
-                text = "${item.description.substring(0,120)}..."
+            text = if (item.description.length > 120){
+                "${item.description.substring(0,120)}..."
             }else{
-                text = item.description
+                item.description
             }
         }
-        noteSingleRowBinding.itemLayout.setOnClickListener { onItemClicked(adapterPosition,item) }
+        noteSingleRowBinding.itemLayout.setOnClickListener { onItemClicked(item) }
     }
     }
 }

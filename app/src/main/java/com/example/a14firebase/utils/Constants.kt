@@ -15,3 +15,7 @@ object FireStoreDocumentField{
     const val  USER_ID = "user_id"
 
 }
+object FirebaseStorageConstants{
+    const val ROOT_DIRECTORY = "app"
+    const val NOTE_IMAGE = "note"
+}

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.a14firebase.databinding.ImageItemBinding
 
 class ImageListingAdapter(
-    private val imgUriList: MutableList<Uri>
+    private val imgUriList: MutableList<Uri>, private val onDeleteItem: (Int, Uri) -> Unit
 ) : RecyclerView.Adapter<ImageListingAdapter.ImageListingViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageListingViewHolder {
@@ -38,7 +38,7 @@ class ImageListingAdapter(
         fun bind(item: Uri) {
             binding.imgNote.setImageURI(item)
             binding.imgRemove.setOnClickListener {
-                removeItem(absoluteAdapterPosition)
+                onDeleteItem(absoluteAdapterPosition,item)
             }
         }
 
