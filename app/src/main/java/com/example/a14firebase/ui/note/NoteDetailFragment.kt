@@ -52,7 +52,6 @@ class NoteDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //initializing our adapter class
         imgAdapter = ImageListingAdapter(imgUriList, onDeleteItem = { pos, item ->
             onRemoveImage(pos, item)
         })
@@ -66,9 +65,7 @@ class NoteDetailFragment : Fragment() {
     }
 
     private fun updateUI() {
-        //setting date format
         val sdf = SimpleDateFormat("dd MMM yyyy . hh:mm a")
-        //getting out note object from note
         objNote = arguments?.getParcelable("note")
         objNote?.let { note ->
             binding.title.setText(note.title)
@@ -200,6 +197,27 @@ class NoteDetailFragment : Fragment() {
         }
     }
 
+    private fun getNote(): Note {
+        return Note(
+            id = objNote?.id ?: "",
+            title = binding.title.text.toString(),
+            description = binding.description.text.toString(),
+            tags = tagsList,
+            date = Date(),
+            imgUri = getImageUri()
+        ).apply { authViewModel.getSession { this.user_id = it?.id ?: "" } }
+    }
+
+    private fun getImageUri(): List<String> {
+        return if (imgUriList.isNotEmpty()) {
+            imgUriList.map {
+                it.toString()
+            }
+        } else {
+            objNote?.imgUri ?: arrayListOf()
+        }
+    }
+
 
     private fun showAddTagDialog() {
         val dialog = createDialog(R.layout.add_tag_dialog, true, requireContext())
@@ -266,25 +284,9 @@ class NoteDetailFragment : Fragment() {
         return isValid
     }
 
-    private fun getNote(): Note {
-        return Note(
-            id = objNote?.id ?: "",
-            title = binding.title.text.toString(),
-            description = binding.description.text.toString(),
-            tags = tagsList,
-            date = Date(),
-            imgUri = getImageUri()
-        ).apply { authViewModel.getSession { this.user_id = it?.id ?: "" } }
-    }
-
-    private fun getImageUri(): List<String> {
-        return if (imgUriList.isNotEmpty()) {
-            imgUriList.map {
-                it.toString()
-            }
-        } else {
-            objNote?.imgUri ?: arrayListOf()
-        }
+    private fun onRemoveImage(pos: Int, item: Uri) {
+        imgAdapter.removeItem(pos)
+        binding.editIcon.performClick()
     }
 
     private fun deleteNoteObserver() {
@@ -350,10 +352,6 @@ class NoteDetailFragment : Fragment() {
         }
     }
 
-    private fun onRemoveImage(pos: Int, item: Uri) {
-        imgAdapter.removeItem(pos)
-        binding.editIcon.performClick()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -65,7 +65,14 @@ class NoteListingFragment : Fragment() {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
         binding.recyclerView.layoutManager = staggeredGridLayoutManager
         binding.recyclerView.adapter = noteListingAdapter
+        authViewModel.getSession {
+            noteViewModel.getNotes(it)
+        }
         observer()
+        bindHandlers()
+    }
+
+    private fun bindHandlers() {
         binding.btnCreate.setOnClickListener {
             findNavController().navigate(R.id.action_noteListingFragment_to_noteDetailFragment)
         }
@@ -74,19 +81,20 @@ class NoteListingFragment : Fragment() {
                 findNavController().navigate(R.id.action_noteListingFragment_to_loginFragment)
             }
         }
-        authViewModel.getSession {
-            noteViewModel.getNotes(it)
-        }
-
+    }
+    //checking storage permission allowed or not
+    private fun checkPermissionForExternalStorage(): Boolean {
+        return (ActivityCompat.checkSelfPermission(
+            requireActivity(),
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    // Ex. Launching Storage read permission.
+    private fun startStoragePermissionRequest() {
+        permissionResultCallback.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
+    //callback function
     private val permissionResultCallback = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -116,19 +124,6 @@ class NoteListingFragment : Fragment() {
         }
     }
 
-    // Ex. Launching Storage read permission.
-    private fun startStoragePermissionRequest() {
-        permissionResultCallback.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-    }
-
-    private fun checkPermissionForExternalStorage(): Boolean {
-        return (ActivityCompat.checkSelfPermission(
-            requireActivity(),
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED)
-    }
-
-
     private fun navigateToNoteDetailFragment() {
         findNavController().navigate(
             R.id.action_noteListingFragment_to_noteDetailFragment,
@@ -136,7 +131,6 @@ class NoteListingFragment : Fragment() {
                 putParcelable("note", objNote)
             })
     }
-
 
     private fun observer() {
         noteViewModel.notes.observe(viewLifecycleOwner) { state ->
